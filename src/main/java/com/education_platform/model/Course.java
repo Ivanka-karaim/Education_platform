@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +15,6 @@ import org.hibernate.annotations.Where;
 @Table(name="course")
 public class Course {
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -31,7 +30,6 @@ public class Course {
     @NotNull
     @ManyToOne
     @JoinColumn(name="teacher_id")
-    @Where(clause = "role.title = 'teacher'")
     private User teacher;
 
     private String description;

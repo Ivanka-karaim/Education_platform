@@ -18,7 +18,6 @@ import java.sql.Time;
 public class Test {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

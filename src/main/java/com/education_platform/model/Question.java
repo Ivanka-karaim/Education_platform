@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class Question {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 

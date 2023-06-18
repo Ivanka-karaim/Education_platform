@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class Module {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -9,15 +9,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="user")
+@Table(name="usr")
 public class User {
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
@@ -32,7 +33,11 @@ public class User {
     private String password;
     @Size(max=20)
     private String phone_number;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+
+    private boolean enabled=true;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name="user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 }

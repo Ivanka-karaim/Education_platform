@@ -18,9 +18,10 @@ import lombok.NoArgsConstructor;
 public class CourseComment {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
     @NotNull
     @Max(5)
     @Min(0)

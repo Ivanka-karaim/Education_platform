@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class UserCourse {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

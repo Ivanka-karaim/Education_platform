@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 public class Lecture {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
