@@ -26,7 +26,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/registration").permitAll()
+                        .requestMatchers("/", "/registration", "/courses", "/courses/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -37,25 +37,6 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-//    @Bean
-//    @Bean
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-//
-//        // Налаштуйте SQL-запити для отримання користувачів, їх ролей та інших даних з вашої бази даних
-//        userDetailsManager.setUsersByUsernameQuery("select email, password from usr where email=?");
-//        userDetailsManager.setAuthoritiesByUsernameQuery("select u.email, ur.roles, from usr u inner join user_role ur on u.id=ur.user_id where u.email=?");
-//
-//        return userDetailsManager;
-//    }
-//    @Bean
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .passwordEncoder(NoOpPasswordEncoder.getInstance())
-//                .usersByUsernameQuery("select email, password from usr where email=?")
-//                .authoritiesByUsernameQuery("select u.email, ur.roles, from usr u inner join user_role ur on u.id=ur.user_id where u.email=?");
-//    }
 
 
     @Bean

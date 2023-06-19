@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container" align="center">
+  <h2>Test</h2>
+
+  <div class="media">
+    <div class="media-body">
+      <h2 th:text="${test.title}"></h2>
+      <p>Duration: <strong th:text="${test.duration}"></strong></p>
+      <p>MaxGrade: <strong th:text="${test.maxGrade}"></strong></p>
+
+        <a th:href="'/test/'+${test.id}">Start</a>
+
+    </div>
+
+    <hr>
+  </div>
+  <form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+  </form>
+
+</div>
+</body>
+</html>

@@ -1,34 +1,25 @@
-package com.education_platform.model;
+package com.education_platform.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name="question")
-public class Question {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class QuestionDTO {
     private Long id;
-
-    @NotNull
     private String title;
-
-    @NotNull
     private float grade;
-
-    @NotNull
     private String type;
 
-    @ManyToOne
-    @JoinColumn(name="test_id")
-    private Test test;
+    private List<AnswerDTO> answers;
 }

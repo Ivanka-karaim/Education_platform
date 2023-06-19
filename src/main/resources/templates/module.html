@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container" align="center">
+    <h2>Module</h2>
+
+    <div class="media">
+        <div class="media-body">
+            <h2 th:text="${module.title}"></h2>
+            <p>Duration: <strong th:text="${module.duration}"></strong></p>
+            <p>Title: <strong th:text="${module.title}"></strong></p>
+            <h2>Lectures</h2>
+            <div th:each="el: ${module.lectures}">
+                <a th:href="'/lectures/'+${el.id}" th:text="${el.title}"></a>
+            </div>
+            <h2>Test</h2>
+            <div th:if="${module.test.id}!=null">
+                <a th:href="'/modules/'+${module.id}+'/test/'" th:text="${module.test.title}"></a>
+            </div>
+            <div th:if="${next}">
+            <a th:href="'/modules/'+${next}">Next</a>
+        </div>
+            <div th:if="${prev}">
+                <a th:href="'/modules/'+${prev}">Prev</a>
+            </div>
+
+
+        </div>
+
+        <hr>
+    </div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+
+</div>
+</body>
+</html>

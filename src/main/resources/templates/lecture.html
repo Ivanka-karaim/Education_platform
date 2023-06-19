@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<head>
+  <meta charset="UTF-8">
+  <title>Course</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container" align="center">
+  <h2>Lecture</h2>
+
+  <div class="media">
+    <div class="media-body">
+      <h2 th:text="${lecture.title}"></h2>
+      <p> <strong th:text="${lecture.description}"></strong></p>
+      <p>Video: <strong th:text="${lecture.video}"></strong></p>
+    </div>
+    <div th:if="${next}">
+      <a th:href="'/lectures/'+${next}">Next</a>
+    </div>
+    <div th:if="${prev}">
+      <a th:href="'/lectures/'+${prev}">Prev</a>
+    </div>
+
+    <hr>
+  </div>
+  <form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+  </form>
+
+</div>
+</body>
+</html>

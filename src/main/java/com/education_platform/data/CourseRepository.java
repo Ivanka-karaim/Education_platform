@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface CourseRepository extends CrudRepository<Course, Long> {
     List<Course> findAll();
 
-    Optional<Course> findById(Long id);
-
     <S extends Course> S save(S entity);
 
 }

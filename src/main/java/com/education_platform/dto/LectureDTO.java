@@ -1,6 +1,8 @@
-package com.education_platform.model;
+package com.education_platform.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,25 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name="lecture")
-public class Lecture {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class LectureDTO {
     private Long id;
-
-    @NotNull
     private String title;
-
     private String description;
-
     private String video;
 
-    private int number;
-
-    @ManyToOne
-    @JoinColumn(name="module_id")
-    private Module module;
+    private Long module_id;
 
 }
