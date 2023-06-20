@@ -17,6 +17,19 @@
             <div th:each="el: ${course.modules}">
                 <a th:href="'/modules/'+${el.id}" th:text="${el.title}"></a>
             </div>
+
+            <form method="post" th:action="'/change_enroll_courses'">
+                <div th:if="${course.user_enroll}">
+                    <button class="btn btn-primary" type="submit">Відписатись</button>
+                </div>
+                <div th:if="!${course.user_enroll}">
+                    <button class="btn btn-primary" type="submit">Зареєструватись</button>
+
+                </div>
+                <input type="hidden" th:value="${course.id}" name="course_enroll">
+                <input type="hidden" th:value="'/courses/'+${course.id}" name="page">
+
+            </form>
         </div>
 
         <hr>

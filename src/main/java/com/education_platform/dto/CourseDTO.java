@@ -19,5 +19,6 @@ public class CourseDTO {
     private String description;
 
     private List<ShortModuleDTO> modules;
+    private boolean user_enroll=false;
 
 }

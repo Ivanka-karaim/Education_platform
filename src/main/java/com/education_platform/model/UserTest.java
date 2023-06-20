@@ -14,6 +14,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="user_test")
 public class UserTest {
+
+    public UserTest(float grade, User user, Test test){
+        this.grade = grade;
+        this.user = user;
+        this.test = test;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

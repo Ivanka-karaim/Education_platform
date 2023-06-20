@@ -2,28 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
 <head>
   <meta charset="UTF-8">
-  <title>Test</title>
+  <title>Result</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 <div class="container" align="center">
-  <h2>Test</h2>
+  <h2>Result</h2>
 
   <div class="media">
     <div class="media-body">
-      <h2 th:text="${test.title}"></h2>
-      <p>Duration: <strong th:text="${test.duration}"></strong></p>
-      <p>MaxGrade: <strong th:text="${test.maxGrade}"></strong></p>
-      <div th:if="${error}">
-        <p th:text="${error}"></p>
-        <p> Ваша оцінка: <strong th:text="${grade}+'/'+${maxGrade}"></strong></p>
-      </div>
-      <div th:if="!${error}">
-        <a th:href="'/test/'+${test.id}">Start</a>
-      </div>
-
-
-
+      <h2 th:text="${result}"></h2>
     </div>
 
     <hr>

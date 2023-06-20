@@ -16,6 +16,11 @@ import java.time.LocalDateTime;
 @Table(name="user_course")
 public class UserCourse {
 
+    public UserCourse(User user, Course course){
+        this.user = user;
+        this.course = course;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -8,6 +8,9 @@
 <body>
 <div class="container" align="center">
     <h2>Courses</h2>
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
     <div th:each="el: ${courses}">
         <div class="media">
             <div class="media-body">
@@ -15,6 +18,19 @@
                 <p>Teacher: <strong th:text="${el.teacher.name}"></strong></p>
                 <p>Category: <strong th:text="${el.category}"></strong></p>
                 <a th:href="'/courses/'+${el.id}" class="btn btn-primary">Watch</a>
+
+                <form method="post" th:action="'/change_enroll_courses'">
+                    <div th:if="${el.user_enroll}">
+                    <button class="btn btn-primary" type="submit">Відписатись</button>
+                    </div>
+                    <div th:if="!${el.user_enroll}">
+                        <button class="btn btn-primary" type="submit">Зареєструватись</button>
+
+                    </div>
+                    <input type="hidden" th:value="${el.id}" name="course_enroll">
+                    <input type="hidden" value="/courses" name="page">
+
+                </form>
             </div>
         </div>
         <hr>
