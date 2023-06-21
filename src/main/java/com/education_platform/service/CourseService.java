@@ -3,8 +3,6 @@ package com.education_platform.service;
 import com.education_platform.data.*;
 import com.education_platform.dto.*;
 import com.education_platform.model.*;
-import com.education_platform.model.Module;
-import jdk.incubator.vector.VectorOperators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +24,20 @@ public class CourseService {
     @Autowired
     private UserCourseRepository userCourseRepository;
 
+
+
     @Autowired
     private TestService testService;
 
     public boolean userHasCourse(Long user_id, Long course_id) {
         UserCourse userCourse = userCourseRepository.findByUserIdAndCourseId(user_id, course_id).orElse(null);
         return userCourse != null;
+    }
+
+    public float getRatingByCourseAndUser(Long course_id, Long user_id){
+        List<Test> tests = testService.getAllTestByCourse(course_id);
+        List<UserTest> userTests = testService.getAllUserTestByCourseAndUser(user_id, course_id);
+        return tests.size()==0?1:(float) userTests.size()/tests.size();
     }
 
 

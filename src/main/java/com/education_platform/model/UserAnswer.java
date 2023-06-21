@@ -19,6 +19,7 @@ public class UserAnswer {
         this.answerText = answerText;
         this.answer = answer;
         this.user = user;
+
     }
 
     @Id
@@ -27,6 +28,8 @@ public class UserAnswer {
 
     @JoinColumn(name="answer_text")
     private String answerText;
+
+
 
     @ManyToOne
     @JoinColumn(name="answer_id")

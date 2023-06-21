@@ -5,14 +5,11 @@ import com.education_platform.model.UserTest;
 import com.education_platform.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -65,9 +62,13 @@ public class CourseController {
         CourseDTO course;
         if(userDetails != null){
             course = courseService.getCourseById(id, userService.getUserByEmail(userDetails.getUsername()).getId());
+            float rating = courseService.getRatingByCourseAndUser(course.getId(), userService.getUserByEmail(userDetails.getUsername()).getId());
+            System.out.println(rating);
+            model.addAttribute("rating", rating*100);
         }else {
             course=courseService.getCourseById(id);
         }
+
         model.addAttribute("course", course);
         return "course";
     }
@@ -93,14 +94,16 @@ public class CourseController {
         List<ShortModuleDTO> moduleDTOS = moduleService.getModuleDTOsByCourse(moduleDTO.getCourse_id());
 
         int index = moduleDTOS.indexOf(new ShortModuleDTO(moduleDTO.getId(), moduleDTO.getTitle(), moduleDTO.getDuration()));
-        if (index == 0 ){
-            model.addAttribute("next", moduleDTOS.get(index+1).getId());
-        }else if (index == moduleDTOS.size()-1){
-            model.addAttribute("prev", moduleDTOS.get(index-1).getId());
-        }else{
-            model.addAttribute("next", moduleDTOS.get(index+1).getId());
-            model.addAttribute("prev", moduleDTOS.get(index-1).getId());
+        if (moduleDTOS.size() > 1) {
+            if (index == 0) {
+                model.addAttribute("next", moduleDTOS.get(index + 1).getId());
+            } else if (index == moduleDTOS.size() - 1) {
+                model.addAttribute("prev", moduleDTOS.get(index - 1).getId());
+            } else {
+                model.addAttribute("next", moduleDTOS.get(index + 1).getId());
+                model.addAttribute("prev", moduleDTOS.get(index - 1).getId());
 
+            }
         }
         return "module";
     }
@@ -158,7 +161,11 @@ public class CourseController {
 
     @PostMapping("/test/{id_test}")
     public String formTest(@RequestParam Map<String, String> formValues, @AuthenticationPrincipal UserDetails userDetails, Model model){
-        float result = answerService.resultTest(formValues, userService.getUserByEmail(userDetails.getUsername()).getId());
+        for(Map.Entry<String, String> entry: formValues.entrySet()){
+            System.out.println(entry.getKey()+"-"+entry.getValue());
+        }
+        float result = testService.resultTest(formValues, userService.getUserByEmail(userDetails.getUsername()).getId());
+
         model.addAttribute("result", result);
         return "result";
     }

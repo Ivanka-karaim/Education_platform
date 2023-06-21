@@ -36,24 +36,7 @@ public class AnswerService {
         
     }
 
-    public float resultTest(Map<String, String> formValues, Long user_id){
-        formValues.remove("_csrf");
-        System.out.println(formValues);
-        float grade = 0;
-        User user = userRepository.findById(user_id).orElse(new User());
-        Answer answer = new Answer();
-        for(String value: formValues.values()) {
-            answer = answerRepository.findById(Long.valueOf(value)).orElse(new Answer());
-            UserAnswer userAnswer = new UserAnswer("", answer, user);
-            userAnswerRepository.save(userAnswer);
-            if (answer.isCorrectness()) {
-                grade += answer.getQuestion().getGrade();
-            }
-        }
-        UserTest userTest = new UserTest(grade, user, testRepository.findById(answer.getQuestion().getTest().getId()).orElse(new Test()));
-        userTestRepository.save(userTest);
-        return grade;
-    }
+
 
 
     private List<AnswerDTO> parsingAnswerDTO(List<Answer> list) {
