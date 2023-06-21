@@ -3,6 +3,7 @@ package com.education_platform.controller;
 import com.education_platform.data.UserRepository;
 import com.education_platform.model.Role;
 import com.education_platform.model.User;
+import com.education_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +17,17 @@ import java.util.Set;
 public class RegistrationController {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
     @GetMapping("/registration")
     public String registration(){
         return "registration";
     }
     @PostMapping("/registration")
-    public String addUser(User user, @RequestParam(name="is_teacher") boolean is_teacher, Model model){
+    public String addUser(User user, @RequestParam(name="is_teacher") boolean is_teacher,@RequestParam(name="password_repeat") String passwordRepeat,  Model model){
         System.out.println(user);
+        System.out.println(passwordRepeat);
         User userFromDB = userRepository.findByEmail(user.getEmail());
         if (userFromDB != null){
             model.addAttribute("error", "User exist");
@@ -33,6 +38,8 @@ public class RegistrationController {
         }else {
             user.setRoles(Set.of(Role.STUDENT));
         }
+        model.addAttribute("errors", userService.validationData(user, passwordRepeat));
+
         userRepository.save(user);
         return "redirect:/login";
     }

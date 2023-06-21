@@ -7,17 +7,23 @@
 </head>
 <body>
 <div class="container" align="center">
-    <h2>Courses</h2>
-    <div th:if="${error}">
-        <p th:text="${error}"></p>
+
+    <h2>Categories</h2>
+    <div th:each="category: ${categories}">
+        <a th:href="'/category/'+${category.id}" th:text="${category.title}"></a>
     </div>
+    <h2>Search</h2>
+    <input type="text">
+    <h2>Courses</h2>
+
     <div th:each="el: ${courses}">
         <div class="media">
             <div class="media-body">
-                <h2 th:text="${el.name}"></h2>
+                <p th:text="'Name: '+${el.name}"></p>
                 <p>Teacher: <strong th:text="${el.teacher.name}"></strong></p>
                 <p>Category: <strong th:text="${el.category}"></strong></p>
-                <a th:href="'/courses/'+${el.id}" class="btn btn-primary">Watch</a>
+                <p>Description: <strong th:text="${el.description}"></strong></p>
+                <a th:href="'/courses/'+${el.id}" class="btn btn-primary">View in more detail</a>
 
                 <form method="post" th:action="'/change_enroll_courses'">
                     <div th:if="${el.user_enroll}">
@@ -35,10 +41,8 @@
         </div>
         <hr>
     </div>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-
+    <h3>Pagination</h3>
+    <p><a href="">1</a>   <a href="">2</a>   <a href="">3</a></p>
 </div>
 </body>
 </html>

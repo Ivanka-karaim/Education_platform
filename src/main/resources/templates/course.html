@@ -14,6 +14,7 @@
             <h2 th:text="${course.name}"></h2>
             <p>Teacher: <strong th:text="${course.teacher.name}"></strong></p>
             <p>Category: <strong th:text="${course.category}"></strong></p>
+            <p>Description: <strong th:text="${course.description}"></strong></p>
             <div th:each="el: ${course.modules}">
                 <a th:href="'/modules/'+${el.id}" th:text="${el.title}"></a>
             </div>
@@ -37,10 +38,6 @@
 
         <hr>
     </div>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-
 </div>
 </body>
 </html>

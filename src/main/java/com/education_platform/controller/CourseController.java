@@ -1,6 +1,8 @@
 package com.education_platform.controller;
 
+import com.education_platform.data.CategoryRepository;
 import com.education_platform.dto.*;
+import com.education_platform.model.Category;
 import com.education_platform.model.UserTest;
 import com.education_platform.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +39,9 @@ public class CourseController {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @GetMapping("/courses")
     public String getAllCourses(Model model, @AuthenticationPrincipal UserDetails userDetails){
         List<ShortCourseDTO> courses;
@@ -46,6 +51,10 @@ public class CourseController {
         }else{
              courses = courseService.getAllCourses();
         }
+
+        List<Category> categories = (List<Category>) categoryRepository.findAll();
+        model.addAttribute("categories", categories);
+
         model.addAttribute("courses", courses);
         return "courses";
     }

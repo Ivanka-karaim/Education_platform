@@ -11,7 +11,7 @@
   You have been logged out.
 </div>
 <div th:if="${error}">
-  {{error}}
+  <p th:text="${error}"></p>
 </div>
 Add new user
 <form th:action="@{/registration}" method="post">
@@ -19,6 +19,7 @@ Add new user
   <div><label>Name : <input type="text" name="name"/> </label></div>
   <div><label> Surname : <input type="text" name="surname"/> </label></div>
   <div><label> Password: <input type="password" name="password"/> </label></div>
+  <div><label> Password repeat: <input type="password" name="password_repeat"/> </label></div>
   <div><label> Are you teacher?: <input type="checkbox" name="is_teacher"/> </label></div>
   <div><input type="submit" value="Registration"/></div>
 </form>
