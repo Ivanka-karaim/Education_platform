@@ -19,6 +19,7 @@
                 <a th:href="'/modules/'+${el.id}" th:text="${el.title}"></a>
             </div>
 
+
             <form method="post" th:action="'/change_enroll_courses'">
                 <div th:if="${course.user_enroll}">
                     <button class="btn btn-primary" type="submit">Відписатись</button>
@@ -31,9 +32,40 @@
                 <input type="hidden" th:value="'/courses/'+${course.id}" name="page">
 
             </form>
-            <div th:if="${rating}">
-                <p><strong th:text="${rating}"></strong>/100</p>
+            <h3>Progress user</h3>
+            <div th:if="${progress}">
+                <p><strong th:text="${progress}"></strong>/100</p>
             </div>
+            <h3>Rating course</h3>
+            <div th:if="${rating}">
+                <p><strong th:text="${rating}"></strong>/5</p>
+            </div>
+            <h3>Course comments</h3>
+            <div th:each="comment :${comments}">
+                <div th:if="${course.user_enroll}">
+                    <div th:if="${ course.user_enroll.email.equals(comment.user.email)}">
+                        <form th:action="'/delComment'" method="post">
+                            <input type="hidden" name="comment_id" th:value="${comment.id}">
+                            <input type="hidden" name="course_id" th:value="${course.id}">
+                            <button class="btn btn-primary" type="submit">Видалити</button>
+                        </form>
+                    </div>
+                </div>
+                <p>Grade: <strong th:text="${comment.rating}"></strong></p>
+                <p>Name: <strong th:text="${comment.comment}"></strong></p>
+                <p>User: <strong th:text="${comment.user.name}"></strong></p>
+                <hr>
+            </div>
+            <div th:if="${course.user_enroll}">
+                <h3>Add comment</h3>
+                <form th:action="'/addComment'" method="post">
+                    <input type="number" placeholder="Enter grade" name="grade">
+                    <input type="text" placeholder="Enter comment" name="comment">
+                    <input type="hidden" name="course_id" th:value="${course.id}">
+                    <button class="btn btn-primary" type="submit">Зберегти</button>
+                </form>
+            </div>
+
         </div>
 
         <hr>

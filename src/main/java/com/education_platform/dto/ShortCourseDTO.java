@@ -15,6 +15,5 @@ public class ShortCourseDTO {
     private String category;
     private User teacher;
     private String description;
-    private boolean user_enroll=false;
 
 }

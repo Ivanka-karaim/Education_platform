@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CourseService {
@@ -25,95 +26,123 @@ public class CourseService {
     private UserCourseRepository userCourseRepository;
 
 
-
     @Autowired
     private TestService testService;
+
+    @Autowired
+    private CourseCommentRepository courseCommentRepository;
 
     public boolean userHasCourse(String user_id, Long course_id) {
         UserCourse userCourse = userCourseRepository.findByUserEmailAndCourseId(user_id, course_id).orElse(null);
         return userCourse != null;
     }
 
-    public float getRatingByCourseAndUser(Long course_id, String user_id){
+    public float getRatingByCourseAndUser(Long course_id, String user_id) {
         List<Test> tests = testService.getAllTestByCourse(course_id);
         List<UserTest> userTests = testService.getAllUserTestByCourseAndUser(user_id, course_id);
-        return tests.size()==0?1:(float) userTests.size()/tests.size();
+        return tests.size() == 0 ? 1 : (float) userTests.size() / tests.size();
     }
 
-    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id){
+    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id) {
         List<Course> courses = courseRepository.findAllByCategoryId(category_id);
-        return parsingShortCoursesDTO(courses, "0");
+        return parsingShortCoursesDTO(courses);
     }
 
-    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id, String user_id){
-        List<Course> courses = courseRepository.findAllByCategoryId(category_id);
-        return parsingShortCoursesDTO(courses, user_id);
-    }
-    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery, String user_id){
-        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery);
-        return parsingShortCoursesDTO(courses, user_id);
-    }
-    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery){
-        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery);
-        return parsingShortCoursesDTO(courses,"0");
+    public List<CourseComment> getAllCourseComment(Long course_id) {
+        return courseCommentRepository.findAllByCourseId(course_id);
     }
 
-    public boolean enrollUserCourse(String user_id, Long course_id){
+    public float getRatingCourse(List<CourseComment> courseComments) {
+        int count = 0;
+        float sum = 0;
+        for (CourseComment courseComment : courseComments) {
+            sum += courseComment.getRating();
+            count += 1;
+        }
+
+        return count == 0 ? 0 : sum / count;
+    }
+
+    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery) {
+        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery);
+        return parsingShortCoursesDTO(courses);
+    }
+
+    public boolean enrollUserCourse(String user_id, Long course_id) {
         UserCourse userCourseDB = userCourseRepository.findByUserEmailAndCourseId(user_id, course_id).orElse(null);
-        if (userCourseDB != null){
+        if (userCourseDB != null) {
             userCourseRepository.delete(userCourseDB);
             return false;
-        }else {
+        } else {
             UserCourse userCourse = new UserCourse(userRepository.findByEmail(user_id).orElse(new User()), courseRepository.findById(course_id).orElse(new Course()));
             userCourseRepository.save(userCourse);
             return true;
         }
     }
-    public List<ShortCourseDTO> getAllCourses(){
+
+    public List<ShortCourseDTO> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
-        return parsingShortCoursesDTO(courses, "0");
+        return parsingShortCoursesDTO(courses);
     }
 
-    public List<ShortCourseDTO> getAllCourses(String user_id){
-        List<Course> courses = courseRepository.findAll();
-        return parsingShortCoursesDTO(courses, user_id);
-    }
 
-    public List<ShortCourseDTO> getAllCoursesByUser(String user_id){
+    public List<ShortCourseDTO> getAllCoursesByUser(String user_id) {
         List<UserCourse> userCourses = userCourseRepository.findAllByUserEmail(user_id);
         List<Course> courses = new ArrayList<>();
-        for(UserCourse userCourse: userCourses){
+        for (UserCourse userCourse : userCourses) {
             courses.add((userCourse.getCourse()));
         }
-        return parsingShortCoursesDTO(courses, user_id);
+        return parsingShortCoursesDTO(courses);
     }
 
-    public CourseDTO getCourseById(Long id){
+    public CourseDTO getCourseById(Long id) {
         Course course = courseRepository.findById(id).get();
         List<ShortModuleDTO> moduleDTOS = moduleService.getModuleDTOsByCourse(course.getId());
-        return parsingCourseDTO(course, moduleDTOS,"0");
-    }
-    public CourseDTO getCourseById(Long id, String user_id){
-        Course course = courseRepository.findById(id).get();
-        List<ShortModuleDTO> moduleDTOS = moduleService.getModuleDTOsByCourse(course.getId());
-        return parsingCourseDTO(course, moduleDTOS,user_id);
+        return parsingCourseDTO(course, moduleDTOS, "0");
     }
 
+
+
+    public CourseDTO getCourseById(Long id, String user_id) {
+        Course course = courseRepository.findById(id).get();
+        List<ShortModuleDTO> moduleDTOS = moduleService.getModuleDTOsByCourse(course.getId());
+        return parsingCourseDTO(course, moduleDTOS, user_id);
+    }
+
+    public boolean addComment(int rating, String comment, Long course_id, String user_id) {
+        CourseComment courseComment = new CourseComment(rating, comment, courseRepository.findById(course_id).orElse(null), userRepository.findByEmail(user_id).orElse(null));
+        courseCommentRepository.save(courseComment);
+        return true;
+    }
+
+    public boolean delComment(Long comment_id, String user_id) {
+        CourseComment courseComment = courseCommentRepository.findById(comment_id).orElse(new CourseComment());
+        if (!Objects.equals(courseComment.getUser().getEmail(), user_id)) {
+            return false;
+        }
+        courseCommentRepository.delete(courseComment);
+        return true;
+
+    }
 
 
     private CourseDTO parsingCourseDTO(Course course, List<ShortModuleDTO> moduleDTOS, String user_id) {
+        System.out.println(course);
+        UserCourse userCourse = userCourseRepository.findByUserEmailAndCourseId(user_id, course.getId()).orElse(null);
+        System.out.println(userCourse);
         return CourseDTO.builder()
-                            .id(course.getId())
-                            .category(course.getCategory().getTitle())
-                            .description(course.getDescription())
-                            .name(course.getName())
-                            .teacher(course.getTeacher())
-                            .modules(moduleDTOS)
-                .user_enroll(userCourseRepository.findByUserEmailAndCourseId(user_id, course.getId()).orElse(null) != null)
-                    .build();
+                .id(course.getId())
+                .category(course.getCategory().getTitle())
+                .description(course.getDescription())
+                .name(course.getName())
+                .teacher(course.getTeacher())
+                .modules(moduleDTOS)
+                .user_enroll(userCourse==null?null:userCourse.getUser())
+                .build();
 
     }
-    private List<ShortCourseDTO> parsingShortCoursesDTO(List<Course> list, String user_id) {
+
+    private List<ShortCourseDTO> parsingShortCoursesDTO(List<Course> list) {
         List<ShortCourseDTO> CourseDTOs = new ArrayList<>();
 
         for (Course course : list) {
@@ -123,7 +152,6 @@ public class CourseService {
                     .description(course.getDescription())
                     .name(course.getName())
                     .teacher(course.getTeacher())
-                    .user_enroll(userCourseRepository.findByUserEmailAndCourseId(user_id, course.getId()).orElse(null) != null)
                     .build());
         }
 

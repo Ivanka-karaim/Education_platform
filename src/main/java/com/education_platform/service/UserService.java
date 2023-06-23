@@ -1,6 +1,7 @@
 package com.education_platform.service;
 
 import com.education_platform.data.UserRepository;
+import com.education_platform.dto.CourseDTO;
 import com.education_platform.dto.UserDTO;
 import com.education_platform.dto.Error;
 import com.education_platform.model.User;
@@ -69,6 +70,9 @@ public class UserService {
         }
         return errors;
     }
+
+
+
 
 
 

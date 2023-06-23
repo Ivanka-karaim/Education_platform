@@ -17,6 +17,13 @@ import lombok.NoArgsConstructor;
 @Table(name="course_comment")
 public class CourseComment {
 
+    public CourseComment(int rating, String comment, Course course, User user){
+        this.rating = rating;
+        this.comment = comment;
+        this.course = course;
+        this.user = user;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

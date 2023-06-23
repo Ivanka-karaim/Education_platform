@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" >
 <head>
     <meta charset="UTF-8">
     <title>Course</title>
@@ -18,7 +18,7 @@
             <div th:each="el: ${module.lectures}">
                 <a th:href="'/lectures/'+${el.id}" th:text="${el.title}"></a>
             </div>
-            <h2>Test</h2>
+            <h2>Tests</h2>
             <div th:each="test: ${module.tests}">
                 <a th:href="'/modules/'+${module.id}+'/test/'+${test.id}" th:text="${test.title}"></a>
             </div>

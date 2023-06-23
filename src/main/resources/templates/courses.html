@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en"xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
@@ -29,19 +29,23 @@
                 <a th:href="'/courses/'+${el.id}" class="btn btn-primary">View in more detail</a>
 
                 <form method="post" th:action="'/change_enroll_courses'">
-<!--                    <div th:if="${el.user_enroll}">-->
-<!--                    <button class="btn btn-primary" type="submit">Відписатись</button>-->
-<!--                    </div>-->
-<!--                    <div th:if="!${el.user_enroll}">-->
-<!--                        <button class="btn btn-primary" type="submit">Зареєструватись</button>-->
+                    <!--                    <div th:if="${el.user_enroll}">-->
+                    <!--                    <button class="btn btn-primary" type="submit">Відписатись</button>-->
+                    <!--                    </div>-->
+                    <!--                    <div th:if="!${el.user_enroll}">-->
+                    <!--                        <button class="btn btn-primary" type="submit">Зареєструватись</button>-->
 
-<!--                    </div>-->
-                    <div th:if="${userCourses.contains(el)}">
-                        <button class="btn btn-primary" type="submit">Відписатись</button>
+                    <!--                    </div>-->
+                    <div th:if="${userCourses}">
+                        <div th:if="${userCourses.contains(el)}">
+                            <button class="btn btn-primary" type="submit">Відписатись</button>
+                        </div>
+                        <div th:if="!${userCourses.contains(el)}">
+                            <button class="btn btn-primary" type="submit">Зареєструватись</button>
+                        </div>
                     </div>
-                    <div th:if="!${userCourses.contains(el)}">
+                    <div th:if="!${userCourses}">
                         <button class="btn btn-primary" type="submit">Зареєструватись</button>
-
                     </div>
                     <input type="hidden" th:value="${el.id}" name="course_enroll">
                     <input type="hidden" value="/courses" name="page">
@@ -52,7 +56,7 @@
         <hr>
     </div>
     <h3>Pagination</h3>
-    <p><a href="">1</a>   <a href="">2</a>   <a href="">3</a></p>
+    <p><a href="">1</a> <a href="">2</a> <a href="">3</a></p>
 </div>
 </body>
 </html>

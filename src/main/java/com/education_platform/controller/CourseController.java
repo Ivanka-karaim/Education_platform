@@ -3,6 +3,7 @@ package com.education_platform.controller;
 import com.education_platform.data.CategoryRepository;
 import com.education_platform.dto.*;
 import com.education_platform.model.Category;
+import com.education_platform.model.CourseComment;
 import com.education_platform.model.UserTest;
 import com.education_platform.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,8 +35,6 @@ public class CourseController {
     @Autowired
     private AnswerService answerService;
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private TestService testService;
@@ -47,42 +46,31 @@ public class CourseController {
     public String getAllCourses(Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "category", required = false) Long categoryId, @RequestParam(value = "search", required = false) String searchQuery) {
         List<ShortCourseDTO> courses;
         if (userDetails != null) {
-            UserDTO userDTO = userService.getUserByEmail(userDetails.getUsername());
-            List<ShortCourseDTO> courses1 = courseService.getAllCoursesByUser(userDTO.getEmail());
-            if (categoryId != null) {
-                courses = courseService.getAllCoursesByCategory(categoryId, userDTO.getEmail());
-            } else if (searchQuery != null) {
-                courses = courseService.getAllCoursesSearch(searchQuery, userDTO.getEmail());
-            } else {
-                courses = courseService.getAllCourses(userDTO.getEmail());
-            }
-            for(ShortCourseDTO course: courses){
-                System.out.println(courses1.contains(course));
-            }
+            List<ShortCourseDTO> courses1 = courseService.getAllCoursesByUser(userDetails.getUsername());
             model.addAttribute("userCourses", courses1);
-
-        } else {
-            if (categoryId != null) {
-                courses = courseService.getAllCoursesByCategory(categoryId);
-            } else if (searchQuery != null) {
-                courses = courseService.getAllCoursesSearch(searchQuery);
-            } else {
-                courses = courseService.getAllCourses();
-            }
         }
-        model.addAttribute("search", searchQuery);
+        if (categoryId != null) {
+            courses = courseService.getAllCoursesByCategory(categoryId);
+        } else if (searchQuery != null) {
+            courses = courseService.getAllCoursesSearch(searchQuery);
+        } else {
+            courses = courseService.getAllCourses();
+        }
 
+
+
+        model.addAttribute("search", searchQuery);
         List<Category> categories = (List<Category>) categoryRepository.findAll();
         model.addAttribute("categories", categories);
-
         model.addAttribute("courses", courses);
+
+
         return "courses";
     }
 
     @PostMapping("/change_enroll_courses")
     public String enrollCourse(@RequestParam String course_enroll, @RequestParam String page, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        UserDTO userDTO = userService.getUserByEmail(userDetails.getUsername());
-        boolean userNotEnroll = courseService.enrollUserCourse(userDTO.getEmail(), Long.valueOf(course_enroll));
+        boolean userNotEnroll = courseService.enrollUserCourse(userDetails.getUsername(), Long.valueOf(course_enroll));
         return "redirect:" + page;
     }
 
@@ -90,13 +78,19 @@ public class CourseController {
     public String getCourse(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         CourseDTO course;
         if (userDetails != null) {
-            course = courseService.getCourseById(id, userService.getUserByEmail(userDetails.getUsername()).getEmail());
-            float rating = courseService.getRatingByCourseAndUser(course.getId(), userService.getUserByEmail(userDetails.getUsername()).getEmail());
+            course = courseService.getCourseById(id, userDetails.getUsername());
+            float rating = courseService.getRatingByCourseAndUser(course.getId(), userDetails.getUsername());
             System.out.println(rating);
-            model.addAttribute("rating", rating * 100);
+            model.addAttribute("progress", rating * 100);
         } else {
             course = courseService.getCourseById(id);
         }
+
+        List<CourseComment> comments = courseService.getAllCourseComment(id);
+        float rating = courseService.getRatingCourse(comments);
+
+        model.addAttribute("rating", rating);
+        model.addAttribute("comments", comments);
 
         model.addAttribute("course", course);
         return "course";
@@ -104,7 +98,7 @@ public class CourseController {
 
     @GetMapping("/courses/{id}/modules")
     public String getModulesByCourse(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        if (!courseService.userHasCourse(userService.getUserByEmail(userDetails.getUsername()).getEmail(), id)) {
+        if (!courseService.userHasCourse(userDetails.getUsername(), id)) {
             model.addAttribute("error", "Спочатку зареєструйся");
             return getCourse(id, model, userDetails);
         }
@@ -116,7 +110,7 @@ public class CourseController {
     @GetMapping("/modules/{id_module}")
     public String getModuleById(@PathVariable("id_module") Long id_module, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         ModuleDTO moduleDTO = moduleService.getModuleById(id_module);
-        if (!courseService.userHasCourse(userService.getUserByEmail(userDetails.getUsername()).getEmail(), moduleDTO.getCourse_id())) {
+        if (!courseService.userHasCourse(userDetails.getUsername(), moduleDTO.getCourse_id())) {
             return "redirect:/courses/" + moduleDTO.getCourse_id();
         }
         model.addAttribute("module", moduleDTO);
@@ -140,7 +134,7 @@ public class CourseController {
     @GetMapping("/modules/{id_module}/lectures")
     public String getLecturesByModule(@PathVariable("id_module") Long id_module, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         List<LectureDTO> lectureDTOs = lectureService.getLectureDTOsByModule(id_module);
-        if (!courseService.userHasCourse(userService.getUserByEmail(userDetails.getUsername()).getEmail(), moduleService.getModuleById(id_module).getCourse_id())) {
+        if (!courseService.userHasCourse(userDetails.getUsername(), moduleService.getModuleById(id_module).getCourse_id())) {
             return "redirect:/courses/" + moduleService.getModuleById(id_module).getCourse_id();
         }
 
@@ -169,9 +163,9 @@ public class CourseController {
     }
 
     @GetMapping("/modules/{id_module}/test/{id_test}")
-    public String getInformTestById(@PathVariable("id_module") Long id_module,@PathVariable("id_test") Long id_test, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String getInformTestById(@PathVariable("id_module") Long id_module, @PathVariable("id_test") Long id_test, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         TestDTO testDTO = testService.getTestDTOById(id_module);
-        UserTest userTest = testService.userFinishedTest(userService.getUserByEmail(userDetails.getUsername()).getEmail(), testDTO.getId());
+        UserTest userTest = testService.userFinishedTest(userDetails.getUsername(), testDTO.getId());
         if (userTest != null) {
             model.addAttribute("error", "Тест вже пройдено");
             model.addAttribute("grade", userTest.getGrade());
@@ -193,10 +187,25 @@ public class CourseController {
         for (Map.Entry<String, String> entry : formValues.entrySet()) {
             System.out.println(entry.getKey() + "-" + entry.getValue());
         }
-        float result = testService.resultTest(formValues, userService.getUserByEmail(userDetails.getUsername()).getEmail());
+        float result = testService.resultTest(formValues, userDetails.getUsername());
 
         model.addAttribute("result", result);
         return "result";
+    }
+
+
+    @PostMapping("/addComment")
+    public String addComment(@RequestParam Map<String, String> formValues, @AuthenticationPrincipal UserDetails userDetails){
+        System.out.println(111);
+        boolean addComment = courseService.addComment(Integer.parseInt(formValues.get("grade")), formValues.get("comment"), Long.valueOf(formValues.get("course_id")), userDetails.getUsername());
+        return "redirect:/courses/"+formValues.get("course_id");
+    }
+
+    @PostMapping("/delComment")
+    public String delComment(@RequestParam String course_id, @RequestParam String comment_id,  @AuthenticationPrincipal UserDetails userDetails){
+        System.out.println(111);
+        boolean delComment = courseService.delComment(Long.valueOf(comment_id), userDetails.getUsername());
+        return "redirect:/courses/"+course_id;
     }
 
 }
