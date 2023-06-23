@@ -40,7 +40,23 @@ public class CourseService {
         return tests.size()==0?1:(float) userTests.size()/tests.size();
     }
 
+    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id){
+        List<Course> courses = courseRepository.findAllByCategoryId(category_id);
+        return parsingShortCoursesDTO(courses, Long.valueOf("0"));
+    }
 
+    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id, Long user_id){
+        List<Course> courses = courseRepository.findAllByCategoryId(category_id);
+        return parsingShortCoursesDTO(courses, user_id);
+    }
+    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery, Long user_id){
+        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery);
+        return parsingShortCoursesDTO(courses, user_id);
+    }
+    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery){
+        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery);
+        return parsingShortCoursesDTO(courses,Long.valueOf("0"));
+    }
 
     public boolean enrollUserCourse(Long user_id, Long course_id){
         UserCourse userCourseDB = userCourseRepository.findByUserIdAndCourseId(user_id, course_id).orElse(null);

@@ -10,10 +10,13 @@
 
     <h2>Categories</h2>
     <div th:each="category: ${categories}">
-        <a th:href="'/category/'+${category.id}" th:text="${category.title}"></a>
+        <a th:href="'/courses?category='+${category.id}" th:text="${category.title}"></a>
     </div>
     <h2>Search</h2>
-    <input type="text">
+    <form action="/courses" method="GET">
+        <input type="text" name="search" placeholder="Пошук курсів" th:value="${search}">
+        <input type="submit" value="Пошук">
+    </form>
     <h2>Courses</h2>
 
     <div th:each="el: ${courses}">
