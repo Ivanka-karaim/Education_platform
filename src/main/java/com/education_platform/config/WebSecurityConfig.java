@@ -43,7 +43,7 @@ public class WebSecurityConfig {
     public UserDetailsService userDetailsService() {
         JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
         userDetailsManager.setUsersByUsernameQuery("select email, password, enabled from usr where email=?");
-        userDetailsManager.setAuthoritiesByUsernameQuery("select u.email, ur.roles from usr u inner join user_role ur on u.id=ur.user_id where u.email=?");
+        userDetailsManager.setAuthoritiesByUsernameQuery("select u.email, ur.roles from usr u inner join user_role ur on u.email=ur.user_id where u.email=?");
         return userDetailsManager;
     }
 

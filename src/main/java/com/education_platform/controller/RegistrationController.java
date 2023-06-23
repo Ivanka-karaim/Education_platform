@@ -28,7 +28,7 @@ public class RegistrationController {
     public String addUser(User user, @RequestParam(name="is_teacher") boolean is_teacher,@RequestParam(name="password_repeat") String passwordRepeat,  Model model){
         System.out.println(user);
         System.out.println(passwordRepeat);
-        User userFromDB = userRepository.findByEmail(user.getEmail());
+        User userFromDB = userRepository.findByEmail(user.getEmail()).orElse(null);
         if (userFromDB != null){
             model.addAttribute("error", "User exist");
             return "registration";

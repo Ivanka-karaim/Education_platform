@@ -20,7 +20,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public UserDTO getUserByEmail(String email){
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElse(new User());
         return  parsingUserDTO(user);
 
     }
@@ -74,7 +74,6 @@ public class UserService {
 
     private UserDTO parsingUserDTO(User user) {
         return UserDTO.builder()
-                .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .email(user.getEmail())

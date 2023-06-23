@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 public class UserDTO {
-    private Long id;
+
 
     private String name;
 

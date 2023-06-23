@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface UserTestRepository extends CrudRepository<UserTest, Long> {
 
-    Optional<UserTest> findByUserIdAndTestId(Long user_id, Long test_id);
+    Optional<UserTest> findByUserEmailAndTestId(String user_email, Long test_id);
 
-    List<UserTest> findAllByUserIdAndTest_Module_CourseId(Long user_id, Long course_id);
+    List<UserTest> findAllByUserEmailAndTest_Module_CourseId(String user_email, Long course_id);
 
 }

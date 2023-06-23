@@ -1,12 +1,14 @@
 package com.education_platform.service;
 
 import com.education_platform.data.*;
+import com.education_platform.dto.AnswerDTO;
 import com.education_platform.dto.ShortTestDTO;
 import com.education_platform.dto.TestDTO;
 import com.education_platform.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,23 +34,21 @@ public class TestService {
     @Autowired
     UserAnswerRepository userAnswerRepository;
 
-    public ShortTestDTO getTestDTOByModule(Long id) {
-        Test test = testRepository.findByModuleId(id).orElse(new Test());
+    public List<ShortTestDTO> getTestDTOByModule(Long id) {
+        List<Test> test = testRepository.findByModuleId(id);
         return parsingShortTestDTO(test);
-
     }
 
     public List<Test> getAllTestByCourse(Long course_id){
         return testRepository.findAllByModule_CourseId(course_id);
     }
 
-    public  List<UserTest> getAllUserTestByCourseAndUser(Long user_id, Long course_id){
-        return userTestRepository.findAllByUserIdAndTest_Module_CourseId(user_id, course_id);
+    public  List<UserTest> getAllUserTestByCourseAndUser(String user_id, Long course_id){
+        return userTestRepository.findAllByUserEmailAndTest_Module_CourseId(user_id, course_id);
     }
 
-    public UserTest userFinishedTest(Long user_id, Long test_id) {
-        return userTestRepository.findByUserIdAndTestId(user_id, test_id).orElse(null);
-
+    public UserTest userFinishedTest(String user_id, Long test_id) {
+        return userTestRepository.findByUserEmailAndTestId(user_id, test_id).orElse(null);
     }
 
 
@@ -57,11 +57,11 @@ public class TestService {
         return parsingTestDTO(test);
     }
 
-    public float resultTest(Map<String, String> formValues, Long user_id) {
+    public float resultTest(Map<String, String> formValues,String user_id) {
         formValues.remove("_csrf");
         Long question = Long.valueOf("0");
         float grade = 0;
-        User user = userRepository.findById(user_id).orElse(new User());
+        User user = userRepository.findByEmail(user_id).orElse(new User());
         Answer answer = new Answer();
         for (Map.Entry<String, String> entry : formValues.entrySet()) {
             if (entry.getKey().contains("one_")) {
@@ -114,13 +114,18 @@ public class TestService {
         return map;
     }
 
-    private ShortTestDTO parsingShortTestDTO(Test test) {
-        return ShortTestDTO.builder()
-                .id(test.getId())
-                .duration(test.getDuration())
-                .maxGrade(test.getMaxGrade())
-                .title(test.getTitle())
-                .build();
+    private List<ShortTestDTO> parsingShortTestDTO(List<Test> tests) {
+        List<ShortTestDTO> testDTOs = new ArrayList<>();
+
+        for (Test test: tests) {
+            testDTOs.add(ShortTestDTO.builder()
+                    .id(test.getId())
+                    .duration(test.getDuration())
+                    .maxGrade(test.getMaxGrade())
+                    .title(test.getTitle())
+                    .build());
+        }
+        return testDTOs;
 
     }
 

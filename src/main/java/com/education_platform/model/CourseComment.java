@@ -34,6 +34,6 @@ public class CourseComment {
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_email")
     private User user;
 }

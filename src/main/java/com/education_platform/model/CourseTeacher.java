@@ -21,8 +21,7 @@ public class CourseTeacher {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name="teacher_id")
-    @Where(clause = "role.title = 'teacher'")
+    @JoinColumn(name="teacher_email")
     private User teacher;
 
     @ManyToOne

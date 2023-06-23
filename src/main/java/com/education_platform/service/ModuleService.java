@@ -48,7 +48,7 @@ public class ModuleService {
                             .number(module.getNumber())
                             .course_id(module.getCourse().getId())
                             .lectures(lectureService.getLectureDTOsByModule(module.getId()))
-                            .test(testService.getTestDTOByModule(module.getId()))
+                            .tests(testService.getTestDTOByModule(module.getId()))
                     .build());
         }
 

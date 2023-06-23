@@ -26,7 +26,7 @@ public class ModuleDTO {
     private List<LectureDTO> lectures;
     private int number;
 
-    private ShortTestDTO test;
+    private List<ShortTestDTO> tests;
 
     private Long course_id;
 

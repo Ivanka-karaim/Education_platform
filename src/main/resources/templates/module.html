@@ -19,8 +19,8 @@
                 <a th:href="'/lectures/'+${el.id}" th:text="${el.title}"></a>
             </div>
             <h2>Test</h2>
-            <div th:if="${module.test.id}!=null">
-                <a th:href="'/modules/'+${module.id}+'/test/'" th:text="${module.test.title}"></a>
+            <div th:each="test: ${module.tests}">
+                <a th:href="'/modules/'+${module.id}+'/test/'+${test.id}" th:text="${test.title}"></a>
             </div>
             <div th:if="${next}">
             <a th:href="'/modules/'+${next}">Next</a>

@@ -29,7 +29,7 @@ public class UserTest {
     private float grade;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_email")
     private User user;
 
     @ManyToOne

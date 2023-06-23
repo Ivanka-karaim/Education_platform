@@ -19,15 +19,14 @@ import java.util.Set;
 @Table(name="usr")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @NotNull
+    private String email;
     @NotNull
     private String name;
     @NotNull
     private String surname;
 
-    @NotNull
-    private String email;
+
 
     @NotNull
     private String password;

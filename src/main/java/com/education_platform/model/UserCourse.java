@@ -33,7 +33,7 @@ public class UserCourse {
     private boolean certified=false;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_email")
     private User user;
 
     @ManyToOne

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class AnswerDTO {
-    private int id;
+    private Long id;
     private String title;
     private boolean correctness;
 
