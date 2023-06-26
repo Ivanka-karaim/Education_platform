@@ -3,15 +3,24 @@ package com.education_platform.service;
 import com.education_platform.data.*;
 import com.education_platform.dto.*;
 import com.education_platform.model.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -89,6 +98,73 @@ public class CourseService {
             userCourseRepository.save(userCourse);
             return true;
         }
+    }
+    public boolean checkForCourseId(String numbers, Long course_id) {
+        String[] numberArray = numbers.split(";");
+        for (String number : numberArray) {
+            if (number.equals(course_id.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean likeCourse(HttpServletResponse response, HttpServletRequest request, Long course_id)  {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("likeCourses")) {
+                    String courses = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                    if (checkForCourseId(courses, course_id)){
+                        String[] numberArray = courses.split(";");
+                        if (numberArray.length == 1){
+                            cookie.setMaxAge(0);
+                            response.addCookie(cookie);
+                        }else {
+                            StringBuilder updatedCourse = new StringBuilder();
+                            for (String c : numberArray) {
+                                if (!c.equals(course_id.toString())) { // Видаляємо елемент зі списку (3 у вашому випадку)
+                                    updatedCourse.append(c).append(";");
+                                }
+                            }
+                            if (updatedCourse.length() > 0) {
+                                updatedCourse.deleteCharAt(updatedCourse.length() - 1); // Видаляємо останній зайвий кома
+                            }
+                            courses = updatedCourse.toString();
+                            System.out.println(courses);
+                        }
+                    }else {
+                        courses += ";" + course_id.toString();
+                        System.out.println(courses);
+                    }
+
+                    cookie.setValue(URLEncoder.encode(courses, StandardCharsets.UTF_8));
+                    response.addCookie(cookie);
+                    return true;
+                }
+            }
+        }
+        Cookie cookie = new Cookie("likeCourses", course_id.toString());
+        cookie.setMaxAge(30 * 24 * 60 * 60);
+        response.addCookie(cookie);
+        return true;
+    }
+
+    public List<Long> getListCoursesCookie(HttpServletRequest request){
+        String [] numberArray = new String[0];
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("likeCourses")) {
+                    numberArray = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8).split(";");
+                }
+            }
+        }
+        System.out.println(numberArray);
+        System.out.println(11111111);
+        return  Arrays.stream(numberArray)
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
     }
 
     public List<ShortCourseDTO> getAllCourses(int page) {

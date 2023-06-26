@@ -7,6 +7,7 @@ import com.education_platform.model.CourseComment;
 import com.education_platform.model.UserTest;
 import com.education_platform.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,6 +70,8 @@ public class CourseController {
         model.addAttribute("countPage", courseService.getCountPage());
         model.addAttribute("request", request);
 
+        model.addAttribute("likeCourses", courseService.getListCoursesCookie(request));
+
 
         return "courses";
     }
@@ -76,6 +79,13 @@ public class CourseController {
     @PostMapping("/change_enroll_courses")
     public String enrollCourse(@RequestParam String course_enroll, @RequestParam String page, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         boolean userNotEnroll = courseService.enrollUserCourse(userDetails.getUsername(), Long.valueOf(course_enroll));
+        return "redirect:" + page;
+    }
+
+
+    @PostMapping("/like")
+    public String likeCourse(@RequestParam String course_like, @RequestParam String page, Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletResponse response,HttpServletRequest request) {
+        boolean userNotEnroll = courseService.likeCourse(response, request, Long.valueOf(course_like));
         return "redirect:" + page;
     }
 

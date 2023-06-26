@@ -28,6 +28,17 @@
                 <p>Description: <strong th:text="${el.description}"></strong></p>
                 <a th:href="'/courses/'+${el.id}" class="btn btn-primary">View in more detail</a>
 
+                <form method="post" th:action="'/like'">
+                    <input type="hidden" th:value="${el.id}" name="course_like">
+                    <input type="hidden" value="/courses" name="page">
+                    <div th:if="${likeCourses.contains(el.id)}">
+                        <button class="btn btn-primary" type="submit">Dislike</button>
+                    </div>
+                    <div th:if="!${likeCourses.contains(el.id)}">
+                        <button class="btn btn-primary" type="submit">Like</button>
+                    </div>
+                </form>
+
                 <form method="post" th:action="'/change_enroll_courses'">
                     <div th:if="${userCourses}">
                         <div th:if="${userCourses.contains(el)}">
