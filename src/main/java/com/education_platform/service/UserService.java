@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Watchable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,19 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElse(new User());
         return  parsingUserDTO(user);
 
+    }
+
+    public boolean editUser(User user, String user_email){
+        Optional<User> optionalUser = userRepository.findByEmail(user_email);
+        if (optionalUser.isPresent()) {
+            User userObject = optionalUser.get();
+            userObject.setName(user.getName());
+            userObject.setSurname(user.getSurname());
+            userObject.setPhone_number(user.getPhone_number());
+            userRepository.save(userObject);
+            return true;
+        }
+        return false;
     }
     public List<Error> validationData(User user, String passwordRepeat){
         List<Error> errors = new ArrayList<>();

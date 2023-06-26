@@ -4,6 +4,9 @@ import com.education_platform.data.*;
 import com.education_platform.dto.*;
 import com.education_platform.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +15,8 @@ import java.util.Objects;
 
 @Service
 public class CourseService {
+
+    private final int COUNT_COURSE=20;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -32,6 +37,10 @@ public class CourseService {
     @Autowired
     private CourseCommentRepository courseCommentRepository;
 
+    public int getCountPage(){
+        return (int) Math.ceil((float) courseRepository.count()/COUNT_COURSE);
+    }
+
     public boolean userHasCourse(String user_id, Long course_id) {
         UserCourse userCourse = userCourseRepository.findByUserEmailAndCourseId(user_id, course_id).orElse(null);
         return userCourse != null;
@@ -43,8 +52,9 @@ public class CourseService {
         return tests.size() == 0 ? 1 : (float) userTests.size() / tests.size();
     }
 
-    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id) {
-        List<Course> courses = courseRepository.findAllByCategoryId(category_id);
+    public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id, int page) {
+        Pageable pageable = PageRequest.of((page-1)*COUNT_COURSE, COUNT_COURSE, Sort.by("id"));
+        List<Course> courses = courseRepository.findAllByCategoryId(category_id, pageable);
         return parsingShortCoursesDTO(courses);
     }
 
@@ -63,8 +73,9 @@ public class CourseService {
         return count == 0 ? 0 : sum / count;
     }
 
-    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery) {
-        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery);
+    public List<ShortCourseDTO> getAllCoursesSearch(String searchQuery, int page) {
+        Pageable pageable = PageRequest.of((page-1)*COUNT_COURSE, COUNT_COURSE, Sort.by("id"));
+        List<Course> courses = courseRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchQuery, searchQuery, pageable);
         return parsingShortCoursesDTO(courses);
     }
 
@@ -80,8 +91,11 @@ public class CourseService {
         }
     }
 
-    public List<ShortCourseDTO> getAllCourses() {
-        List<Course> courses = courseRepository.findAll();
+    public List<ShortCourseDTO> getAllCourses(int page) {
+
+        Pageable pageable = PageRequest.of((page-1)*COUNT_COURSE, COUNT_COURSE, Sort.by("id"));
+
+        List<Course> courses = courseRepository.findAll(pageable);
         return parsingShortCoursesDTO(courses);
     }
 

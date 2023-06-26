@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit User</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container" align="center">
+  <h2>Edit User</h2>
+
+  <div class="media">
+    <div class="media-body">
+      <form method="post" th:action="'/user/edit_profile'">
+        <label>Name: </label>
+        <input type="text" th:value="${user.name}" name="name">
+        <label>Surname: </label>
+        <input type="text" th:value="${user.surname}" name="surname">
+        <label>Phone number: </label>
+        <input type="text" th:value="${user.phone_number}" name="phone_number">
+        <button class="btn btn-primary" type="submit">Зберегти</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

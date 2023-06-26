@@ -18,6 +18,13 @@ import java.util.Set;
 @Entity
 @Table(name="usr")
 public class User {
+
+    public User(String name, String surname, String phone_number){
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.phone_number = phone_number;
+    }
     @Id
     @NotNull
     private String email;
@@ -25,8 +32,6 @@ public class User {
     private String name;
     @NotNull
     private String surname;
-
-
 
     @NotNull
     private String password;

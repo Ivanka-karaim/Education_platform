@@ -20,6 +20,8 @@ import java.util.Map;
 @Controller
 public class CourseController {
 
+
+
     @Autowired
     private CourseService courseService;
 
@@ -43,18 +45,18 @@ public class CourseController {
     private CategoryRepository categoryRepository;
 
     @GetMapping("/courses")
-    public String getAllCourses(Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "category", required = false) Long categoryId, @RequestParam(value = "search", required = false) String searchQuery) {
+    public String getAllCourses(HttpServletRequest request,Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "category", required = false) Long categoryId, @RequestParam(value = "search", required = false) String searchQuery, @RequestParam(value = "page", required = false) Long page) {
         List<ShortCourseDTO> courses;
         if (userDetails != null) {
             List<ShortCourseDTO> courses1 = courseService.getAllCoursesByUser(userDetails.getUsername());
             model.addAttribute("userCourses", courses1);
         }
         if (categoryId != null) {
-            courses = courseService.getAllCoursesByCategory(categoryId);
+            courses = courseService.getAllCoursesByCategory(categoryId, Math.toIntExact((page == null) ? 1 : page));
         } else if (searchQuery != null) {
-            courses = courseService.getAllCoursesSearch(searchQuery);
+            courses = courseService.getAllCoursesSearch(searchQuery, Math.toIntExact((page == null) ? 1 : page));
         } else {
-            courses = courseService.getAllCourses();
+            courses = courseService.getAllCourses(Math.toIntExact((page == null) ? 1 : page));
         }
 
 
@@ -63,6 +65,9 @@ public class CourseController {
         List<Category> categories = (List<Category>) categoryRepository.findAll();
         model.addAttribute("categories", categories);
         model.addAttribute("courses", courses);
+
+        model.addAttribute("countPage", courseService.getCountPage());
+        model.addAttribute("request", request);
 
 
         return "courses";
