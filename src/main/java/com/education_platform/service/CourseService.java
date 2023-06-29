@@ -150,6 +150,23 @@ public class CourseService {
         return true;
     }
 
+    public List<ShortCourseDTO> getFavouriteCourses(HttpServletRequest request){
+        List<Course> courses = new ArrayList<>();
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("likeCourses")) {
+                    String coursesStr = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                    String[] numberArray = coursesStr.split(";");
+                    for( String number: numberArray){
+                        courses.add(courseRepository.findById(Long.valueOf(number)).orElse(null));
+                    }
+                }
+            }
+        }
+        return parsingShortCoursesDTO(courses);
+    }
+
     public List<Long> getListCoursesCookie(HttpServletRequest request){
         String [] numberArray = new String[0];
         Cookie[] cookies = request.getCookies();

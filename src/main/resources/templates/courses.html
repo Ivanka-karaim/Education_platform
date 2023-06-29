@@ -7,16 +7,17 @@
 </head>
 <body>
 <div class="container" align="center">
-
-    <h2>Categories</h2>
-    <div th:each="category: ${categories}">
-        <a th:href="'/courses?category='+${category.id}" th:text="${category.title}"></a>
+    <div th:if="${search_category}">
+        <h2>Categories</h2>
+        <div th:each="category: ${categories}">
+            <a th:href="'/courses?category='+${category.id}" th:text="${category.title}"></a>
+        </div>
+        <h2>Search</h2>
+        <form action="/courses" method="GET">
+            <input type="text" name="search" placeholder="Пошук курсів" th:value="${search}">
+            <input type="submit" value="Пошук">
+        </form>
     </div>
-    <h2>Search</h2>
-    <form action="/courses" method="GET">
-        <input type="text" name="search" placeholder="Пошук курсів" th:value="${search}">
-        <input type="submit" value="Пошук">
-    </form>
     <h2>Courses</h2>
 
     <div th:each="el: ${courses}">
@@ -30,7 +31,12 @@
 
                 <form method="post" th:action="'/like'">
                     <input type="hidden" th:value="${el.id}" name="course_like">
-                    <input type="hidden" value="/courses" name="page">
+                    <div th:if="${search_category}">
+                        <input type="hidden" value="/courses" name="page">
+                    </div>
+                    <div th:if="!${search_category}">
+                        <input type="hidden" value="/favourite" name="page">
+                    </div>
                     <div th:if="${likeCourses.contains(el.id)}">
                         <button class="btn btn-primary" type="submit">Dislike</button>
                     </div>
@@ -59,9 +65,11 @@
         </div>
         <hr>
     </div>
-    <h3>Pagination</h3>
-    <div th:each="i : ${#numbers.sequence(1, countPage)}">
-        <a th:href="@{${request.requestURI}(page=${i})}" th:text="${i}"></a>
+    <div th:if="${search_category}">
+        <h3>Pagination</h3>
+        <div th:each="i : ${#numbers.sequence(1, countPage)}">
+            <a th:href="@{${request.requestURI}(page=${i})}" th:text="${i}"></a>
+        </div>
     </div>
 </div>
 </body>

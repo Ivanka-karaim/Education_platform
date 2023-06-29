@@ -72,6 +72,8 @@ public class CourseController {
 
         model.addAttribute("likeCourses", courseService.getListCoursesCookie(request));
 
+        model.addAttribute("search_category", true);
+
 
         return "courses";
     }
@@ -87,6 +89,15 @@ public class CourseController {
     public String likeCourse(@RequestParam String course_like, @RequestParam String page, Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletResponse response,HttpServletRequest request) {
         boolean userNotEnroll = courseService.likeCourse(response, request, Long.valueOf(course_like));
         return "redirect:" + page;
+    }
+
+    @GetMapping("/favourite")
+    public String favouriteCourses(HttpServletRequest request, Model model){
+        List<ShortCourseDTO> courseDTOS = courseService.getFavouriteCourses(request);
+        model.addAttribute("courses", courseDTOS);
+        model.addAttribute("likeCourses", courseService.getListCoursesCookie(request));
+        return "courses";
+
     }
 
     @GetMapping("/courses/{id}")
@@ -179,7 +190,7 @@ public class CourseController {
 
     @GetMapping("/modules/{id_module}/test/{id_test}")
     public String getInformTestById(@PathVariable("id_module") Long id_module, @PathVariable("id_test") Long id_test, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        TestDTO testDTO = testService.getTestDTOById(id_module);
+        TestDTO testDTO = testService.getTestDTOById(id_test);
         UserTest userTest = testService.userFinishedTest(userDetails.getUsername(), testDTO.getId());
         if (userTest != null) {
             model.addAttribute("error", "Тест вже пройдено");
@@ -211,14 +222,12 @@ public class CourseController {
 
     @PostMapping("/addComment")
     public String addComment(@RequestParam Map<String, String> formValues, @AuthenticationPrincipal UserDetails userDetails){
-        System.out.println(111);
         boolean addComment = courseService.addComment(Integer.parseInt(formValues.get("grade")), formValues.get("comment"), Long.valueOf(formValues.get("course_id")), userDetails.getUsername());
         return "redirect:/courses/"+formValues.get("course_id");
     }
 
     @PostMapping("/delComment")
     public String delComment(@RequestParam String course_id, @RequestParam String comment_id,  @AuthenticationPrincipal UserDetails userDetails){
-        System.out.println(111);
         boolean delComment = courseService.delComment(Long.valueOf(comment_id), userDetails.getUsername());
         return "redirect:/courses/"+course_id;
     }

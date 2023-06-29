@@ -8,6 +8,9 @@
 <body>
 <div class="container" align="center">
     <h2>Test</h2>
+    <h3>Timer</h3>
+    <div id="timer" style="color:white">900</div>
+    <div id="timerStr">15хв</div>
     <form th:action="'/test/'+${test.id}" method="post" id="myForm">
         <div th:each="question: ${test.questions}">
             <div class="media">
@@ -48,4 +51,43 @@
 
 </div>
 </body>
+<script>
+        // Функція, яка зменшує таймер і автоматично надсилає форму
+        function countdown() {
+            var timerElement = document.getElementById("timer");
+            var timerStrElement = document.getElementById("timerStr");
+            var seconds = parseInt(timerElement.innerText);
+            if (seconds > 0) {
+                seconds--;
+                timerElement.innerText = seconds;
+                timerStrElement.innerText = formatTime(seconds);
+                setTimeout(countdown, 1000); // Оновлення таймера кожну секунду (1000 мілісекунд)
+            } else {
+                document.getElementById("myForm").submit();
+            }
+        }
+
+        // Запускаємо таймер після завантаження сторінки
+        window.onload = function () {
+            setTimeout(countdown, 1000); // Початкове запуск таймера
+        };
+
+
+        function formatTime(seconds) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor((seconds % 3600) / 60);
+            var remainingSeconds = seconds % 60;
+
+            var formattedTime = "";
+            if (hours > 0) {
+                formattedTime += hours + " год ";
+            }
+            if (minutes > 0) {
+                formattedTime += minutes + " хв ";
+            }
+            formattedTime += remainingSeconds + " сек";
+
+            return formattedTime;
+        }
+    </script>
 </html>
