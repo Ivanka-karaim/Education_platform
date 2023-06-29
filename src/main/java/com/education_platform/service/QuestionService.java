@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,6 +23,7 @@ public class QuestionService {
     
     public List<QuestionDTO> getQuestionDTOsByTest(Long id){
         List<Question> questions = questionRepository.findAllByTestId(id);
+
         return parsingQuestionDTO(questions);
         
         
@@ -41,6 +43,7 @@ public class QuestionService {
                     .build());
         }
         Collections.shuffle(QuestionDTOs);
+        QuestionDTOs.sort(Comparator.comparing(QuestionDTO::getType));
 
         return QuestionDTOs;
     }

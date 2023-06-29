@@ -25,7 +25,7 @@
                             </div>
                         </div>
 
-                        <div th:if="${question.type}=='FEW_ANSWER'">
+                        <div th:if="${question.type}=='SEVERAL_ANSWER'">
                             <div th:each="answer: ${question.answers}">
                                 <input type="checkbox" th:name="'few_'+${question.id}+'_'+${answer.id}"
                                        th:id="${answer.id}"
