@@ -5,12 +5,12 @@
     <title>Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
+
 <div class="container" align="center">
     <h2>Test</h2>
     <h3>Timer</h3>
-    <div id="timer" style="color:white">900</div>
-    <div id="timerStr">15хв</div>
+    <div id="timer" style="display:none;" th:text="${test.seconds}"></div>
+    <div id="timerStr" th:text="${test.time}"></div>
     <form th:action="'/test/'+${test.id}" method="post" id="myForm">
         <div th:each="question: ${test.questions}">
             <div class="media">
@@ -27,7 +27,8 @@
 
                         <div th:if="${question.type}=='FEW_ANSWER'">
                             <div th:each="answer: ${question.answers}">
-                                <input type="checkbox" th:name="'few_'+${question.id}+'_'+${answer.id}" th:id="${answer.id}"
+                                <input type="checkbox" th:name="'few_'+${question.id}+'_'+${answer.id}"
+                                       th:id="${answer.id}"
                                        th:value="${answer.id}">
                                 <label th:for="${answer.id}" th:text="${answer.title}"></label>
                             </div>
@@ -52,6 +53,13 @@
 </div>
 </body>
 <script>
+    window.addEventListener("beforeunload", function(event) {
+     document.getElementById("myForm").submit();
+});
+
+window.addEventListener("unload", function(event) {
+     document.getElementById("myForm").submit();
+});
         // Функція, яка зменшує таймер і автоматично надсилає форму
         function countdown() {
             var timerElement = document.getElementById("timer");
@@ -89,5 +97,8 @@
 
             return formattedTime;
         }
-    </script>
+
+
+
+</script>
 </html>

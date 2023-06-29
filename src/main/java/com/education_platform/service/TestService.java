@@ -8,10 +8,12 @@ import com.education_platform.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TestService {
@@ -55,6 +57,11 @@ public class TestService {
     public TestDTO getTestDTOById(Long id) {
         Test test = testRepository.findById(id).orElse(new Test());
         return parsingTestDTO(test);
+    }
+
+    public ShortTestDTO getShortTestDTOById(Long id) {
+        Test test = testRepository.findById(id).orElse(new Test());
+        return parsingShortTestDTO(List.of(test)).get(0);
     }
 
     public float resultTest(Map<String, String> formValues,String user_id) {
@@ -135,8 +142,35 @@ public class TestService {
                 .duration(test.getDuration())
                 .maxGrade(test.getMaxGrade())
                 .title(test.getTitle())
+                .time(formatTime(test.getDuration()))
+                .seconds(TimeUnit.HOURS.toSeconds(test.getDuration().getHours())
+                        + TimeUnit.MINUTES.toSeconds(test.getDuration().getMinutes())
+                        + test.getDuration().getSeconds())
                 .questions(questionService.getQuestionDTOsByTest(test.getId()))
                 .build();
 
+    }
+
+    private static String formatTime(Time time) {
+        long totalSeconds = time.getTime() / 1000;
+        System.out.println(totalSeconds);
+
+
+        long hours = time.getHours();
+        long minutes = time.getMinutes();
+        long seconds = time.getSeconds();
+
+        StringBuilder sb = new StringBuilder();
+
+        if (hours > 0) {
+            sb.append(hours).append(" год ");
+        }
+        if (minutes > 0) {
+            sb.append(minutes).append(" хв ");
+        } if (seconds>0) {
+            sb.append(seconds).append(" сек");
+        }
+
+        return sb.toString();
     }
 }

@@ -74,7 +74,6 @@ public class CourseController {
 
         model.addAttribute("search_category", true);
 
-
         return "courses";
     }
 
@@ -190,14 +189,14 @@ public class CourseController {
 
     @GetMapping("/modules/{id_module}/test/{id_test}")
     public String getInformTestById(@PathVariable("id_module") Long id_module, @PathVariable("id_test") Long id_test, Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        TestDTO testDTO = testService.getTestDTOById(id_test);
-        UserTest userTest = testService.userFinishedTest(userDetails.getUsername(), testDTO.getId());
+        ShortTestDTO shortTestDTO = testService.getShortTestDTOById(id_test);
+        UserTest userTest = testService.userFinishedTest(userDetails.getUsername(), shortTestDTO.getId());
         if (userTest != null) {
             model.addAttribute("error", "Тест вже пройдено");
             model.addAttribute("grade", userTest.getGrade());
             model.addAttribute("maxGrade", userTest.getTest().getMaxGrade());
         }
-        model.addAttribute("test", testDTO);
+        model.addAttribute("test", shortTestDTO);
         return "info_test";
     }
 

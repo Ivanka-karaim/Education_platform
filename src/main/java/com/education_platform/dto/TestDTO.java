@@ -18,6 +18,9 @@ public class TestDTO {
     private String title;
 
     private Time duration;
+    private Long seconds;
+
+    private String time;
 
     private float maxGrade;
 
