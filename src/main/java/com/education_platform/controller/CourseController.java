@@ -4,6 +4,7 @@ import com.education_platform.data.CategoryRepository;
 import com.education_platform.dto.*;
 import com.education_platform.model.Category;
 import com.education_platform.model.CourseComment;
+import com.education_platform.model.Role;
 import com.education_platform.model.UserTest;
 import com.education_platform.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -116,8 +118,8 @@ public class CourseController {
 
         model.addAttribute("rating", rating);
         model.addAttribute("comments", comments);
-
         model.addAttribute("course", course);
+        model.addAttribute("isTeacher", userDetails.getAuthorities().contains(Role.TEACHER));
         return "course";
     }
 

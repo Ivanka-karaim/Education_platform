@@ -63,6 +63,13 @@
                 </form>
             </div>
 
+            <div th:if="${isTeacher}">
+                <form th:action="'/sendCode'" method="post">
+                    <input type="hidden" name="course_id" th:value="${course.id}">
+                    <button class="btn btn-primary" type="submit">Поділитись курсом з студентами</button>
+                </form>
+            </div>
+
         </div>
 
         <hr>

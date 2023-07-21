@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<head>
+  <meta charset="UTF-8">
+  <title>Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container" align="center">
+  <h2>Code</h2>
+  <div class="media">
+    <div class="media-body">
+      <input th:value="${code}" id="code" readonly>
+      <button onclick="copyText()">Скопіювати</button>
+      <script>
+        function copyText() {
+             var additionalText = "Код для приєднання: "; // Ваш додатковий текст
+            var textToCopy = document.getElementById("code");
+            var text = textToCopy.value;
+
+            // Змінюємо значення поля введення на бажаний текст
+            textToCopy.value = additionalText + textToCopy.value;
+
+            // Виділяємо текст в полі
+            textToCopy.select();
+
+            // Виконуємо команду копіювання
+            document.execCommand("copy");
+
+            // Зняти виділення тексту (необов'язково, але покращує візуальний вигляд)
+            window.getSelection().removeAllRanges();
+            textToCopy.value = text;
+        }
+    </script>
+
+    </div>
+
+    <hr>
+  </div>
+</div>
+</body>
+</html>
