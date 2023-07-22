@@ -32,5 +32,8 @@ public class Course {
     @JoinColumn(name="teacher_id")
     private User teacher;
 
+
+    private String photo;
+
     private String description;
 }

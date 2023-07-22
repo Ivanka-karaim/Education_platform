@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="student_teacher")
-public class StudentTeacher {
+@Table(name="student_class")
+public class StudentClass {
 
-    public StudentTeacher(UserCourse userCourse, CourseTeacher courseTeacher){
+    public StudentClass(UserCourse userCourse, Class aClass){
         this.userCourse = userCourse;
-        this.courseTeacher = courseTeacher;
+        this.aClass = aClass;
     }
 
     @Id
@@ -29,6 +29,6 @@ public class StudentTeacher {
 
     @ManyToOne
     @JoinColumn(name="course_teacher_id")
-    private CourseTeacher courseTeacher;
+    private Class aClass;
 
 }
