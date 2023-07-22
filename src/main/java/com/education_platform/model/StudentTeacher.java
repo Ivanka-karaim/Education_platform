@@ -14,6 +14,11 @@ import lombok.NoArgsConstructor;
 @Table(name="student_teacher")
 public class StudentTeacher {
 
+    public StudentTeacher(UserCourse userCourse, CourseTeacher courseTeacher){
+        this.userCourse = userCourse;
+        this.courseTeacher = courseTeacher;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

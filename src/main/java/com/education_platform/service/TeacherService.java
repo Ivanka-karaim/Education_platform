@@ -2,8 +2,11 @@ package com.education_platform.service;
 
 import com.education_platform.data.CourseRepository;
 import com.education_platform.data.CourseTeacherRepository;
+import com.education_platform.data.StudentTeacherRepository;
 import com.education_platform.data.UserRepository;
 import com.education_platform.model.CourseTeacher;
+import com.education_platform.model.StudentTeacher;
+import com.education_platform.model.UserCourse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,12 @@ public class TeacherService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private StudentTeacherRepository studentTeacherRepository;
 
     public String checkClass(Long course_id,String teacher_id){
         List<CourseTeacher> courseTeacherList = courseTeacherRepository.findAllByCourseIdAndTeacherEmail(course_id, teacher_id);
@@ -54,5 +63,12 @@ public class TeacherService {
             return createClass(course_id, teacher_id);
         }
 
+    }
+    public Long joinStudentInClass(String code, String user_id){
+        CourseTeacher courseTeacher = courseTeacherRepository.findById(code).orElse(new CourseTeacher());
+        UserCourse userCourse = courseService.joinCourse(user_id, courseTeacher.getCourse().getId());
+        StudentTeacher studentTeacher = new StudentTeacher(userCourse, courseTeacher);
+        studentTeacherRepository.save(studentTeacher);
+        return courseTeacher.getCourse().getId();
     }
 }

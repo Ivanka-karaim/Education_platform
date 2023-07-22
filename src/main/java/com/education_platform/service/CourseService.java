@@ -99,6 +99,24 @@ public class CourseService {
             return true;
         }
     }
+
+    public UserCourse saveNewUserCourse(String user_id, Long course_id){
+        UserCourse userCourse = new UserCourse(userRepository.findByEmail(user_id).orElse(new User()), courseRepository.findById(course_id).orElse(new Course()));
+        userCourseRepository.save(userCourse);
+        return userCourse;
+    }
+
+    public UserCourse joinCourse(String user_id, Long course_id){
+        UserCourse userCourseDB = userCourseRepository.findByUserEmailAndCourseId(user_id, course_id).orElse(null);
+        if (userCourseDB != null) {
+            return userCourseDB;
+        } else {
+            UserCourse userCourse = new UserCourse(userRepository.findByEmail(user_id).orElse(new User()), courseRepository.findById(course_id).orElse(new Course()));
+            userCourseRepository.save(userCourse);
+            return userCourse;
+        }
+    }
+
     public boolean checkForCourseId(String numbers, Long course_id) {
         String[] numberArray = numbers.split(";");
         for (String number : numberArray) {

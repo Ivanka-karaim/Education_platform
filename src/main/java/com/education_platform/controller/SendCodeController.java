@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,5 +21,16 @@ public class SendCodeController {
         model.addAttribute("code", teacherService.getCode(Long.valueOf(course_id), userDetails.getUsername()));
 
         return "code";
+    }
+
+    @GetMapping("/joinClass")
+    public String joinClassPage(){
+        return "join_class";
+    }
+
+    @PostMapping("/joinClass")
+    public String joinClass(Model model, @RequestParam String code, @AuthenticationPrincipal UserDetails userDetails){
+        Long course_id = teacherService.joinStudentInClass(code, userDetails.getUsername());
+        return "redirect:/courses/"+course_id;
     }
 }

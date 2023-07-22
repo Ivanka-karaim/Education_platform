@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:fmt="http://www.w3.org/1999/XSL/Transform">
+<head>
+  <meta charset="UTF-8">
+  <title>Приєднатись</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container" align="center">
+  <h2>Join class</h2>
+  <div class="media">
+    <div class="media-body">
+      <form th:action="'/joinClass'" method="post">
+        <input placeholder="Enter code"  name="code">
+        <button type="submit">Приєднатись</button>
+      </form>
+    </div>
+
+    <hr>
+  </div>
+</div>
+</body>
+</html>
