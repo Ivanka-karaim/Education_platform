@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +105,7 @@ public class CourseController {
         CourseDTO course;
         if (userDetails != null) {
             course = courseService.getCourseById(id, userDetails.getUsername());
-            float rating = courseService.getRatingByCourseAndUser(course.getId(), userDetails.getUsername());
+            float rating =testService.getProgressByCourseAndUser(course.getId(), userDetails.getUsername());
             System.out.println(rating);
             model.addAttribute("progress", rating * 100);
         } else {
@@ -231,6 +230,16 @@ public class CourseController {
     public String delComment(@RequestParam String course_id, @RequestParam String comment_id,  @AuthenticationPrincipal UserDetails userDetails){
         boolean delComment = courseService.delComment(Long.valueOf(comment_id), userDetails.getUsername());
         return "redirect:/courses/"+course_id;
+    }
+
+    @PostMapping("/certificate")
+    public String certificate(@RequestParam(value = "action", required = false) String action, @AuthenticationPrincipal UserDetails userDetails, @RequestParam String course_id){
+        switch (action){
+            case "email":
+
+        }
+
+        return "certificate";
     }
 
 }

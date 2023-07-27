@@ -36,13 +36,14 @@ public class TestService {
     @Autowired
     UserAnswerRepository userAnswerRepository;
 
+    @Autowired
+    UserCourseRepository userCourseRepository;
+
+
+
     public List<ShortTestDTO> getTestDTOByModule(Long id) {
         List<Test> test = testRepository.findByModuleId(id);
         return parsingShortTestDTO(test);
-    }
-
-    public List<Test> getAllTestByCourse(Long course_id){
-        return testRepository.findAllByModule_CourseId(course_id);
     }
 
     public  List<UserTest> getAllUserTestByCourseAndUser(String user_id, Long course_id){
@@ -108,7 +109,21 @@ public class TestService {
         }
         UserTest userTest = new UserTest(grade, user, testRepository.findById(answer.getQuestion().getTest().getId()).orElse(new Test()));
         userTestRepository.save(userTest);
+
+        UserCourse userCourse = userCourseRepository.findByUserEmailAndCourseId(user_id, userTest.getTest().getModule().getCourse().getId()).orElse(new UserCourse());
+        userCourse.setGrade(userCourse.getGrade()+grade);
+        userCourseRepository.save(userCourse);
+
+        if (getProgressByCourseAndUser(userTest.getTest().getModule().getCourse().getId(), user_id) == 1){
+            userCourse.setCertificate(true);
+            userCourseRepository.save(userCourse);
+        }
         return grade;
+    }
+    public float getProgressByCourseAndUser(Long course_id, String user_id) {
+        List<Test> tests = testRepository.findAllByModule_CourseId(course_id);
+        List<UserTest> userTests = getAllUserTestByCourseAndUser(user_id, course_id);
+        return tests.size() == 0 ? 1 : (float) userTests.size() / tests.size();
     }
 
     private Map<String, String> getMapForQuestion(Map<String, String> formValues, String question) {

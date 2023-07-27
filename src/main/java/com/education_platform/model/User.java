@@ -44,4 +44,12 @@ public class User {
     @CollectionTable(name="user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    public enum TestType  {
+        ONE_ANSWER, SEVERAL_ANSWER, WRITTEN_ANSWER;
+
+        public String getName(){
+            return name();
+        }
+    }
 }

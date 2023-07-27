@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -55,11 +54,10 @@ public class CourseService {
         return userCourse != null;
     }
 
-    public float getRatingByCourseAndUser(Long course_id, String user_id) {
-        List<Test> tests = testService.getAllTestByCourse(course_id);
-        List<UserTest> userTests = testService.getAllUserTestByCourseAndUser(user_id, course_id);
-        return tests.size() == 0 ? 1 : (float) userTests.size() / tests.size();
-    }
+
+
+
+
 
     public List<ShortCourseDTO> getAllCoursesByCategory(Long category_id, int page) {
         Pageable pageable = PageRequest.of((page-1)*COUNT_COURSE, COUNT_COURSE, Sort.by("id"));
@@ -98,12 +96,6 @@ public class CourseService {
             userCourseRepository.save(userCourse);
             return true;
         }
-    }
-
-    public UserCourse saveNewUserCourse(String user_id, Long course_id){
-        UserCourse userCourse = new UserCourse(userRepository.findByEmail(user_id).orElse(new User()), courseRepository.findById(course_id).orElse(new Course()));
-        userCourseRepository.save(userCourse);
-        return userCourse;
     }
 
     public UserCourse joinCourse(String user_id, Long course_id){
@@ -251,6 +243,8 @@ public class CourseService {
     }
 
 
+
+
     private CourseDTO parsingCourseDTO(Course course, List<ShortModuleDTO> moduleDTOS, String user_id) {
         System.out.println(course);
         UserCourse userCourse = userCourseRepository.findByUserEmailAndCourseId(user_id, course.getId()).orElse(null);
@@ -263,6 +257,7 @@ public class CourseService {
                 .teacher(course.getTeacher())
                 .modules(moduleDTOS)
                 .user_enroll(userCourse==null?null:userCourse.getUser())
+                .certified(userCourse==null?false:userCourse.isCertificate())
                 .build();
 
     }

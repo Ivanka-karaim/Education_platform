@@ -32,9 +32,10 @@ public class UserCourse {
     @JoinColumn(name="date_start")
     private LocalDateTime dateStart = LocalDateTime.now();
 
-    @Lob
-    private SerialBlob certified=null;
 
+    private boolean certificate=false;
+
+    private float grade=0;
     @ManyToOne
     @JoinColumn(name="user_email")
     private User user;

@@ -4,6 +4,7 @@ import com.education_platform.model.User;
 
 import lombok.*;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.util.List;
 
 
@@ -20,5 +21,7 @@ public class CourseDTO {
 
     private List<ShortModuleDTO> modules;
     private User user_enroll;
+
+    private boolean certified;
 
 }

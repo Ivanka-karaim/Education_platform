@@ -29,6 +29,24 @@
                 <input type="hidden" th:value="'/courses/'+${course.id}" name="page">
 
             </form>
+
+
+            <div th:if="${course.certified}">
+                <form th:action="'/certificate?action=download'" method="post">
+                    <input type="hidden" th:value="${course.id}" name="course_id">
+                    <button class="btn btn-primary" type="submit">Завантажити сертифікат</button>
+                </form>
+                <form th:action="'/certificate?action=email'" method="post">
+                <input type="hidden" th:value="${course.id}" name="course_id">
+                <button class="btn btn-primary" type="submit">Надіслати сертифікат на пошту</button>
+            </form>
+                <form th:action="'/certificate?action=telegram'" method="post">
+                    <input type="hidden" th:value="${course.id}" name="course_id">
+                    <button class="btn btn-primary" type="submit">Надіслати сертифікат на телеграм</button>
+                </form>
+            </div>
+
+            
             <h3>Progress user</h3>
             <div th:if="${progress}">
                 <p><strong th:text="${progress}"></strong>/100</p>
